@@ -1,95 +1,54 @@
-import ReactDOM from "react-dom";
-import React, { useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl";
-import fetchFakeData from "./api/fetchFakeData";
-import Popup from "./components/Popup";
-import "./App.css";
+import {useState} from 'react';
+import 'mapbox-gl/dist/mapbox-gl.css'
+import Nav from "./components/Nav";
+import MarketerPage from "./components/marketerUI/Marketer";
+import EndUser from "./components/EndUser";
+import HomePage from "./components/HomePage";
+import {BrowserRouter as Router, Switch, Routes, Route} from "react-router-dom";
 
-mapboxgl.accessToken =
-    "pk.eyJ1Ijoic2hpdmFuaXgiLCJhIjoiY2t3cmExaHZyMHVxODMxbnljMWhhdzF3eiJ9.P9Fsyeu_1o61PHKGsTa96g";
+function App() {
 
-const App = () => {
-  const mapContainerRef = useRef(null);
-  const popUpRef = useRef(new mapboxgl.Popup({ offset: 15 }));
-
-  // initialize map when component mounts
-  useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      // See style options here: https://docs.mapbox.com/api/maps/#styles
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: [-104.9876, 39.7405],
-      zoom: 12.5
-    });
-
-    // add navigation control (zoom buttons)
-    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
-
-    map.on("load", () => {
-      // add the data source for new a feature collection with no features
-      map.addSource("random-points-data", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: []
+    /******************************* Static Data **************************/
+    const branches = [
+        {
+            id: "b1",
+            branchName: "BranchOne",
+            latitude: 43.87310,
+            longitude: -79.28572,
+            offer: "Offer 1",
+            image: "https://images.unsplash.com/photo-1614656048454-dda85616f0a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=80&q=100"
+        },
+        {
+            id: "b2",
+            branchName: "BranchTwo",
+            latitude: 43.88319,
+            longitude: -79.30572,
+            offer: "Offer 2",
+            image: "https://images.unsplash.com/photo-1550827783-07a572d03390?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDR8fGJhbmslMjBtYXJrZXRpbmd8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+            id: "b3",
+            branchName: "BranchThree",
+            latitude: 43.86319,
+            longitude: -78.30572,
+            offer: "Offer 3",
+            image: "https://images.unsplash.com/photo-1518534543674-5933a2307dca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
         }
-      });
-      // now add the layer, and reference the data source above by name
-      map.addLayer({
-        id: "random-points-layer",
-        source: "random-points-data",
-        type: "symbol",
-        layout: {
-          // full list of icons here: https://labs.mapbox.com/maki-icons
-          "icon-image": "bakery-15", // this will put little croissants on our map
-          "icon-padding": 0,
-          "icon-allow-overlap": true
-        }
-      });
-    });
+    ]
 
-    map.on("moveend", async () => {
-      // get new center coordinates
-      const { lng, lat } = map.getCenter();
-      // fetch new data
-      const results = await fetchFakeData({ longitude: lng, latitude: lat });
-      // update "random-points-data" source with new data
-      // all layers that consume the "random-points-data" data source will be updated automatically
-      map.getSource("random-points-data").setData(results);
-    });
+    return (
+        <Router>
+        <div className="app">
+            <Nav/>
+            <Routes>
+            <Route  path="/" element={<HomePage/>}/>
+            <Route path="marketer" element={<MarketerPage branches={branches}/>}/>
+            <Route  path="enduser" element={<EndUser branches={branches}/>}/>
+            </Routes>
+        </div>
+        </Router>
 
-    // change cursor to pointer when user hovers over a clickable feature
-    map.on("mouseenter", "random-points-layer", e => {
-      if (e.features.length) {
-        map.getCanvas().style.cursor = "pointer";
-      }
-    });
-
-    // reset cursor to default when user is no longer hovering over a clickable feature
-    map.on("mouseleave", "random-points-layer", () => {
-      map.getCanvas().style.cursor = "";
-    });
-
-    // add popup when user clicks a point
-    map.on("click", "random-points-layer", e => {
-      if (e.features.length) {
-        const feature = e.features[0];
-        // create popup node
-        const popupNode = document.createElement("div");
-        ReactDOM.render(<Popup feature={feature} />, popupNode);
-        // set popup on map
-        popUpRef.current
-            .setLngLat(feature.geometry.coordinates)
-            .setDOMContent(popupNode)
-            .addTo(map);
-      }
-    });
-
-    // clean up on unmount
-    return () => map.remove();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return <div className="map-container" ref={mapContainerRef} />;
-};
+    );
+}
 
 export default App;

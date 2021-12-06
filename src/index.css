@@ -1,17 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    background-color: #3f3f3f;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.marker-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
-.map-container {
-  height: 90vh;
+/*.marker-btn img {*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*}*/
+
+.popup-img {
+    border: 3px solid blue;
+    width: 40%;
+    height: 100%;
+    float: left;
+}
+
+.popup-img img {
+    object-fit: cover;
+    width: 100%;
+    height: inherit;
+    margin: auto;
+    padding: 0;
+
+}
+
+.mapboxgl-popup-content {
+    width: 300px;
+    height: 100px;
+}
+
+.main-container{
+    border: 3px dotted red;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 90vh;
+    margin-top: 10vh;
+
+}
+
+.second-container{
+    border: 4px dashed yellow;
+    width: 70%;
+}
+/****************************/
+.map-container{
+float: right;
+    width:70vw;
+    height:100vh;
+
+}
+
+canvas.mapboxgl-canvas{
+    border: 4px dotted greenyellow;
+
+}
+
+
+
+/***********************/
+.popup-text {
+    float: right;
+    height: 100%;
+    width: 50%;
+}
+
+.popup-text p {
+    margin: 0;
+}
+
+.popup-text h2 {
+    margin-top: 0px;
 }
