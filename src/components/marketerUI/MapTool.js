@@ -13,19 +13,41 @@ export default function MapTool(props) {
     const [lng, setLng] = useState(-79.29);
     const [lat, setLat] = useState(43.893);
     const [zoom, setZoom] = useState(9);
+    const [modalInfo, setModalInfo] = useState({
+        title: 'Add new branch',
+        message: 'Please enter new branch info',
+        toggle: false
+    });
+    const [newBranchCoords, setNewBranchCoords] = useState(null);
 
-    const branchArr = Object.values(props.branchesDetails)
+    const toggleModal = () => {
+        setModalInfo(prev =>{return {...prev, toggle: !modalInfo.toggle}});
+    };
+
+    //convert object-of-objects to an array - for mapping easily
+    const branchArr = Object.values(JSON.parse(localStorage.getItem('Branches')));
+
+
+    function add_marker(event) {
+        console.log('allowBranch', localStorage.getItem('allowBranch'))
+        if(localStorage.getItem('allowBranch') === 'true') {
+            const coordinates = event.lngLat;
+            props.setNewBranchCoords(coordinates);
+            localStorage.setItem('allowBranch', 'false');
+            toggleModal();
+        }
+    }
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/streets-v11',
+            style: 'mapbox://styles/mapbox/dark-v10',
             center: [lng, lat],
             zoom: zoom
         });
 
-        // Add geolocate control to the map.
+        // Add Geolocatecontrol to the map.
         map.current.addControl(
             new mapboxgl.GeolocateControl({
                 positionOptions: {
@@ -42,7 +64,7 @@ export default function MapTool(props) {
             })
         );
 
-        // Create default Markers and popups and add it to the map.
+        // Create default Markers and popups; add it to the map.
         branchArr.map((eachBranch) => {
             new mapboxgl.Marker({color: 'orange'})
                 .setLngLat([eachBranch.longitude, eachBranch.latitude])
@@ -57,22 +79,21 @@ export default function MapTool(props) {
 
         const marker = new mapboxgl.Marker();
 
-        function add_marker(event) {
-            const coordinates = event.lngLat;
-            console.log('Lng:', coordinates.lng, 'Lat:', coordinates.lat);
-            marker.setLngLat(coordinates).addTo(map.current);
-        }
 
-        // map.current.on('click', add_marker);
+
+
+            map.current.on('click', add_marker);
     });
-
-    const [selectedBranch, setSelectedBranch] = useState(null)
 
 
     return (
         <div className="second-container">
+            {modalInfo.toggle &&
+            <Modal title={modalInfo.title}
+                   message={modalInfo.message}
+                   form={<AddBranch/>}
+                   onConfirm={toggleModal}/>}
             <div ref={mapContainer} className="map-container"/>
-
         </div>
     )
 }
