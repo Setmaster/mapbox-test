@@ -14,6 +14,8 @@ export default function MapTool(props) {
     const [lat, setLat] = useState(43.893);
     const [zoom, setZoom] = useState(9);
 
+    const branchArr = Object.values(props.branchesDetails)
+
     useEffect(() => {
         if (map.current) return; // initialize map only once
         map.current = new mapboxgl.Map({
@@ -41,7 +43,7 @@ export default function MapTool(props) {
         );
 
         // Create default Markers and popups and add it to the map.
-        props.branchesDetails.map((eachBranch) => {
+        branchArr.map((eachBranch) => {
             new mapboxgl.Marker({color: 'orange'})
                 .setLngLat([eachBranch.longitude, eachBranch.latitude])
                 .setPopup(new mapboxgl.Popup({offset: 30}).setHTML(`<div class="popup-img"><img src=${eachBranch.image} alt="thumbnail"/></div>

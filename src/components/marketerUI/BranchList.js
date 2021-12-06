@@ -2,6 +2,8 @@ import "./branchList.css"
 
 export default function BranchList(props) {
 
+    const branchArr = Object.values(props.items)
+
     return (<ul className="branch-list">
             <li>
                 <div className="add-branch">
@@ -12,7 +14,7 @@ export default function BranchList(props) {
                     </button>
                 </div>
             </li>
-            {props.items.map((branch) => {
+            {branchArr.map((branch) => {
 
                 return <li className="branch-list-item">
                     <div className="image-box">

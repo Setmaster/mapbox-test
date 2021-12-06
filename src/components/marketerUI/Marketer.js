@@ -6,6 +6,16 @@ import {useState} from "react";
 
 export default function MarketerPage(props) {
 
+    console.log(props.branches);
+    // const objListToArr = () => {
+    //     let arr = [];
+    //     for (const branch of props.branches) {
+    //         arr.push(branch);
+    //     }
+    //     return arr;
+    // };
+    // const branchArr = objListToArr();
+
     const [modalInfo, setModalInfo] = useState({
         title: 'Add new branch',
         message: 'Please enter a branch info',
