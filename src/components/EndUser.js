@@ -65,6 +65,8 @@ export default function EndUser(props) {
                         <EndUserMap
                             centerToLng={centerToLng}
                             centerToLat={centerToLat}
+                            setCenterToLng={setCenterToLng}
+                            setCenterToLat={setCenterToLat}
                         />
                     </li>
                     {filteredBranches.map((item) => {

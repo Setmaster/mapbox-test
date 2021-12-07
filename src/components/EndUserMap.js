@@ -22,7 +22,6 @@ export default function EndUserMap(props) {
         }
         console.log('easing')
         map.current.easeTo({center: coordinates, zoom: 13});
-        // map.current.flyTo({zoom:10});
     };
 
     //convert object-of-objects to an array - for mapping easily
@@ -40,22 +39,33 @@ export default function EndUserMap(props) {
             });
 
 
+            let geolocate = new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+// When active the map will receive updates to the device's location as it changes.
+                trackUserLocation: true,
+// Draw an arrow next to the location dot to indicate which direction the device is heading.
+                showUserHeading: false,
+// Hide accuracy circle
+                showAccuracyCircle: false,
+// Hide user location dot
+                showUserLocation: false,
+            })
+
             // Add Geolocatecontrol to the map.
             map.current.addControl(
-                new mapboxgl.GeolocateControl({
-                    positionOptions: {
-                        enableHighAccuracy: true
-                    },
-// When active the map will receive updates to the device's location as it changes.
-                    trackUserLocation: true,
-// Draw an arrow next to the location dot to indicate which direction the device is heading.
-                    showUserHeading: false,
-// Hide accuracy circle
-                    showAccuracyCircle: false,
-// Hide user location dot
-                    showUserLocation: false,
-                })
+                geolocate
             );
+
+            geolocate.on('geolocate', function(e) {
+                let lon = e.coords.longitude;
+                let lat = e.coords.latitude
+                let position = [lon, lat];
+                // console.log("positionnnnnnn",position);
+                props.setCenterToLng(lon);
+                props.setCenterToLat(lat);
+            });
             branchArr.map((eachBranch) => {
                 new mapboxgl.Marker({color: 'orange'})
                     .setLngLat([eachBranch.longitude, eachBranch.latitude])
